@@ -76,7 +76,6 @@ function cardMaker(userAttrs) {
   cardInfo.appendChild(pUsername);
   cardInfo.appendChild(pLocation);
   cardInfo.appendChild(pProfile);
-  pProfile.appendChild(linkPage);
   cardInfo.appendChild(pFollowers);
   cardInfo.appendChild(pFollowing);
   cardInfo.appendChild(pBio);
@@ -91,11 +90,11 @@ function cardMaker(userAttrs) {
   pLocation.textContent = location;
   linkPage.setAttribute("href", html_url);
   linkPage.textContent = html_url;
-  pProfile.textContent = "Profile: " + linkPage;
+  pProfile.textContent = "Profile: ";
+  pProfile.appendChild(linkPage);
   pFollowers.textContent = `Followers: ${followers}`;
   pFollowing.textContent = `Following: ${following}`;
   pBio.textContent = `Bio: ${bio}`;
-  console.log(linkPage);
   return card;
 }
 
@@ -106,8 +105,6 @@ axios.get(`https://api.github.com/users/simonh24`)
     const myInfo = data.data;
     entryPoint.appendChild(cardMaker(myInfo));
   })
-  .catch(data => console.log("error"))
-  .finally(console.log("done"))
 
 
 /*
@@ -127,6 +124,15 @@ for (let i = 0; i < friendsArray.length; i++) {
     const friendsInfo = data.data;
     entryPoint.appendChild(cardMaker(friendsInfo));
   })
-  .catch(data => console.log("error"))
-  .finally(console.log("done"))
 }
+
+function followerCards(personName) {
+  axios.get(`https://api.github.com/users/${personName}/followers`)
+  .then(data => {
+    for (let i = 0; i < data.length; i++) {
+      const followerInfo = data[i];
+      entryPoint.appendChild(cardMaker(followerInfo));
+    }
+  })
+}
+followerCards("charliesome");
