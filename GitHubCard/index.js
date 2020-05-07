@@ -4,6 +4,9 @@
     https://api.github.com/users/<your name>
 */
 axios.get(`https://api.github.com/users/simonh24`)
+  .then(data => console.log(data))
+  .catch(data => console.log("error"))
+  .finally(console.log("done"))
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -86,15 +89,26 @@ function cardMaker(userAttrs) {
   pUsername.classList.add("username");
   pUsername.textContent = login;
   pLocation.textContent = location;
-  pProfile.textContent = "Profile: ";
   linkPage.setAttribute("href", html_url);
   linkPage.textContent = html_url;
+  pProfile.textContent = "Profile: " + linkPage;
   pFollowers.textContent = `Followers: ${followers}`;
   pFollowing.textContent = `Following: ${following}`;
   pBio.textContent = `Bio: ${bio}`;
-
+  console.log(linkPage);
   return card;
 }
+
+const entryPoint = document.querySelector(".cards");
+
+axios.get(`https://api.github.com/users/simonh24`)
+  .then(data => {
+    const myInfo = data.data;
+    entryPoint.appendChild(cardMaker(myInfo));
+  })
+  .catch(data => console.log("error"))
+  .finally(console.log("done"))
+
 
 /*
   List of LS Instructors Github username's:
@@ -104,3 +118,15 @@ function cardMaker(userAttrs) {
     luishrd
     bigknell
 */
+
+const friendsArray = ["tetondan", "dustinmyers", "justsml", "luishrd", "bigknell"];
+
+for (let i = 0; i < friendsArray.length; i++) {
+  axios.get(`https://api.github.com/users/${friendsArray[i]}`)
+  .then(data => {
+    const friendsInfo = data.data;
+    entryPoint.appendChild(cardMaker(friendsInfo));
+  })
+  .catch(data => console.log("error"))
+  .finally(console.log("done"))
+}
