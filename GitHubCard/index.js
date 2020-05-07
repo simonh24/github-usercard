@@ -129,8 +129,8 @@ for (let i = 0; i < friendsArray.length; i++) {
 function followerCards(personName) {
   axios.get(`https://api.github.com/users/${personName}/followers`)
   .then(data => {
-    for (let i = 0; i < data.length; i++) {
-      const followerInfo = data[i];
+    for (let i = 0; i < data.data/length; i++) {
+      const followerInfo = data.data[i];
       entryPoint.appendChild(cardMaker(followerInfo));
     }
   })
