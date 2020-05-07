@@ -3,6 +3,10 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+axios.get(`https://api.github.com/users/simonh24`)
+  .then(data => console.log(data))
+  .catch(data => console.log("error"))
+  .finally(console.log("done"))
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -50,6 +54,59 @@ const followersArray = [];
     </div>
 */
 
+
+function cardMaker(userAttrs) {
+  const {avatar_url, name, login, location, html_url, followers, following, bio} = userAttrs;
+
+  const card = document.createElement("div");
+  const imageURL = document.createElement("img");
+  const cardInfo = document.createElement("div");
+  const h3Name = document.createElement("h3");
+  const pUsername = document.createElement("p");
+  const pLocation = document.createElement("p");
+  const pProfile = document.createElement("p");
+  const linkPage = document.createElement("a");
+  const pFollowers = document.createElement("p");
+  const pFollowing = document.createElement("p");
+  const pBio = document.createElement("p");
+
+  card.appendChild(imageURL);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(h3Name);
+  cardInfo.appendChild(pUsername);
+  cardInfo.appendChild(pLocation);
+  cardInfo.appendChild(pProfile);
+  cardInfo.appendChild(pFollowers);
+  cardInfo.appendChild(pFollowing);
+  cardInfo.appendChild(pBio);
+
+  card.classList.add("card");
+  imageURL.setAttribute("src", avatar_url);
+  cardInfo.classList.add("card-info");
+  h3Name.classList.add("name");
+  h3Name.textContent = name;
+  pUsername.classList.add("username");
+  pUsername.textContent = login;
+  pLocation.textContent = location;
+  linkPage.setAttribute("href", html_url);
+  linkPage.textContent = html_url;
+  pProfile.textContent = "Profile: ";
+  pProfile.appendChild(linkPage);
+  pFollowers.textContent = `Followers: ${followers}`;
+  pFollowing.textContent = `Following: ${following}`;
+  pBio.textContent = `Bio: ${bio}`;
+  return card;
+}
+
+const entryPoint = document.querySelector(".cards");
+
+axios.get(`https://api.github.com/users/simonh24`)
+  .then(data => {
+    const myInfo = data.data;
+    entryPoint.appendChild(cardMaker(myInfo));
+  })
+
+
 /*
   List of LS Instructors Github username's:
     tetondan
@@ -58,3 +115,24 @@ const followersArray = [];
     luishrd
     bigknell
 */
+
+const friendsArray = ["tetondan", "dustinmyers", "justsml", "luishrd", "bigknell"];
+
+for (let i = 0; i < friendsArray.length; i++) {
+  axios.get(`https://api.github.com/users/${friendsArray[i]}`)
+  .then(data => {
+    const friendsInfo = data.data;
+    entryPoint.appendChild(cardMaker(friendsInfo));
+  })
+}
+
+function followerCards(personName) {
+  axios.get(`https://api.github.com/users/${personName}/followers`)
+  .then(data => {
+    for (let i = 0; i < data.data/length; i++) {
+      const followerInfo = data.data[i];
+      entryPoint.appendChild(cardMaker(followerInfo));
+    }
+  })
+}
+followerCards("charliesome");
